@@ -16,7 +16,7 @@ if not openai_key:
 client = openai.OpenAI(api_key=openai_key)
 
 # Lecture du fichier source
-df = pd.read_csv("products.csv", sep=';')
+df = pd.read_csv("produits_uniques.csv", sep=';')
 df['PRD_NOM'] = df['PRD_NOM'].str.strip().str.upper()
 
 # Chargement du cache (clé = EAN13)
@@ -56,7 +56,7 @@ Réponds uniquement par un chiffre entre 1 et 5. Pas d'explication."""
 
 # Préparation des produits uniques par EAN13
 unique_products = df[['PRD_EAN13', 'PRD_NOM']].drop_duplicates()
-products_to_score = unique_products[~unique_products['PRD_EAN13'].isin(cache)].head(100)  # Limite à 10 pour test
+products_to_score = unique_products[~unique_products['PRD_EAN13'].isin(cache)]
 
 print(f"🧠 Produits à scorer : {len(products_to_score)}")
 
@@ -73,5 +73,5 @@ with open(CACHE_FILE, "w", encoding="utf-8") as f:
 df["CHRONICITY_SCORE"] = df["PRD_EAN13"].map(cache)
 
 # Export
-df.to_csv("products_scored.csv", sep=';', index=False)
+df.to_csv("products_scored_uniques.csv", sep=';', index=False)
 print("✅ Fichier 'products_scored.csv' généré avec scores par EAN13.")
